@@ -1,0 +1,34 @@
+pipeline {
+    agent {
+        node {
+            label 'agent'
+        }
+    }
+    triggers {
+        pollSCM('H/2 8-19 * * 1-5')
+    }
+    stages {
+        stage('Téléchargement des sources') {
+            steps {
+                  git branch: 'main', url: 'https://github.com/Babouche56-byte/relais.git'
+            }
+        }
+        stage('Compilation des sources') {
+            steps {
+                sh 'cd UDP && make build'
+            }
+        }
+        stage('Vérification dynamique') {
+            steps {
+                sh 'cd UDP && make testsuite'
+                sh 'cd TCP && make testsuite'
+            }
+        }
+        stage('Analyse statique') {
+            steps {
+                sh 'cd UDP && make analyse'
+                sh 'cd TCP && make analyse'
+            }
+        }
+    }
+}
