@@ -4,6 +4,7 @@
 #include "erreur.h"
 #include "nombre.h"
 #include <stdio.h>
+#include "dns.h"
 
 /* Déclaration des fonctions utilisées dans les tests */
 int is_valid_ip(const char *ip);
@@ -17,14 +18,14 @@ int clean_suite(void) { return 0; }
 
 /****** Cas de test - validation de l'adresse IP *****/
 void test_validation_ip(void) {
-    CU_ASSERT_TRUE(is_valid_ip("192.168.1.1"));
-    CU_ASSERT_FALSE(is_valid_ip("192.168.11"));
+    CU_ASSERT(is_valid_ip("192.168.1.1"));
+    CU_ASSERT(!is_valid_ip("192.168.11"));
 }
 
 /**** Cas de test - validation du port *****/ 
 void test_validation_port(void) {
-    CU_ASSERT_TRUE(is_valid_port(8080));
-    CU_ASSERT_FALSE(is_valid_port(10));
+    CU_ASSERT(is_valid_port(8080));
+    CU_ASSERT(!is_valid_port(10));
 }
 
 /******************* Lancement des tests ***********************/
