@@ -1,6 +1,5 @@
 #include "erreur.h"
 #include "udp.h"
-
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -10,42 +9,67 @@
 
 /* Créer une socket */
 void creer_socket(char* adresseIP, int port, SOCK* sock) {
-	
-	/*A COMPLETER*/
-	traiter_erreur(__FUNCTION__);
-	/*A COMPLETER*/
+    // Créer une socket UDP
+    sock->sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+    traiter_erreur(__FUNCTION__);
+    
+    // Initialiser la structure d'adresse
+    memset(&sock->addr, 0, sizeof(sock->addr));
+    sock->addr.sin_family = AF_INET;
+    sock->addr.sin_port = htons(port);
+    
+    // Si adresseIP est NULL, on utilise INADDR_ANY
+    if (adresseIP == NULL) {
+        sock->addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    } else {
+        sock->addr.sin_addr.s_addr = inet_addr(adresseIP);
+    }
 }
 
 /* Attacher une socket */
 void attacher_socket(SOCK* sock) {
-	/*A COMPLETER*/
-	traiter_erreur(__FUNCTION__);
+    int result = bind(sock->sockfd, (struct sockaddr*)&sock->addr, sizeof(sock->addr));
+    traiter_erreur(__FUNCTION__);
 }
 
 /*Initialiser la structure adresse client */
 void init_addr(SOCK* sock) {
-	/*A COMPLETER*/
+    memset(&sock->addr, 0, sizeof(sock->addr));
+    sock->addr.sin_family = AF_INET;
+    sock->addr_len = sizeof(sock->addr);
 }
 
 /* Dimensionner la file d'attente d'une socket */
 void dimensionner_file_attente_socket(int taille, SOCK* sock) {
-	/*A COMPLETER*/
-	traiter_erreur(__FUNCTION__);
+    // Cette fonction n'est pas nécessaire pour UDP car il n'y a pas de file d'attente
+    // UDP est sans connexion
+    (void)taille; // Pour éviter l'avertissement de variable non utilisée
+    (void)sock;   // Pour éviter l'avertissement de variable non utilisée
+    traiter_erreur(__FUNCTION__);
 }
 
 /* Recevoir un message */
-void recevoir_message(SOCK* dst, char * buffer) {
-	/*A COMPLETER*/	
-	traiter_erreur(__FUNCTION__);
+void recevoir_message(SOCK* dst, char* buffer) {
+    ssize_t nbytes = recvfrom(dst->sockfd, buffer, TAILLE_BUFFER, 0,
+                             (struct sockaddr*)&dst->addr, &dst->addr_len);
+    if (nbytes < 0) {
+        traiter_erreur(__FUNCTION__);
+    }
+    buffer[nbytes] = '\0'; // Assurer que le message est terminé par un caractère nul
 }
 
 /* Émettre un message */
-void envoyer_message(SOCK* dst, char * message) {
-	/*A COMPLETER*/
-	traiter_erreur(__FUNCTION__);
+void envoyer_message(SOCK* dst, char* message) {
+    ssize_t nbytes = sendto(dst->sockfd, message, strlen(message), 0,
+                           (struct sockaddr*)&dst->addr, sizeof(dst->addr));
+    if (nbytes < 0) {
+        traiter_erreur(__FUNCTION__);
+    }
 }
+
 /* Fermer la connexion */
 void fermer_connexion(SOCK* sock) {
-	/*A COMPLETER*/
-	traiter_erreur(__FUNCTION__);
+    if (close(sock->sockfd) < 0) {
+        traiter_erreur(__FUNCTION__);
+    }
 }
