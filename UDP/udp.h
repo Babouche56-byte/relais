@@ -1,26 +1,23 @@
-#include <sys/socket.h>
-#include <sys/types.h>
+#ifndef UDP_H
+#define UDP_H
+
 #include <netinet/in.h>
-#include <arpa/inet.h>
 
-#include "erreur.h"
-
-#ifndef _UDP_H
-#define _UDP_H
-#define TAILLE_MSG 256
+#define TAILLE_BUFFER 1024
 
 typedef struct {
-	int sockfd;
-     	struct sockaddr_in adresse;
-     	socklen_t longueur_adresse;
+    int sockfd;                     // Descripteur de la socket
+    struct sockaddr_in addr;        // Structure d'adresse
+    socklen_t addrlen;             // Longueur de l'adresse
 } SOCK;
 
-void creer_socket(char*, int, SOCK*);
-void attacher_socket(SOCK*);
-void dimensionner_file_attente_socket(int, SOCK*);
-void init_addr(SOCK*);
-int attendre_connexion(SOCK*, SOCK*);
-void recevoir_message(SOCK*, char *);
-void envoyer_message(SOCK*, char *);
-void fermer_connexion(SOCK*);
-#endif // _UDP_H_
+// Prototypes des fonctions
+void creer_socket(char* adresseIP, int port, SOCK* sock);
+void attacher_socket(SOCK* sock);
+void init_addr(SOCK* sock);
+void dimensionner_file_attente_socket(int taille, SOCK* sock);
+void recevoir_message(SOCK* dst, char* buffer);
+void envoyer_message(SOCK* dst, char* message);
+void fermer_connexion(SOCK* sock);
+
+#endif
