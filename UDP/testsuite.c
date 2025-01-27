@@ -4,7 +4,6 @@
 #include "erreur.h"
 #include "nombre.h"
 #include <stdio.h>
-#include "dns.h"
 
 /* Déclaration des fonctions utilisées dans les tests */
 int is_valid_ip(const char *ip);
