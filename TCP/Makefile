@@ -24,4 +24,6 @@ nombre.o: nombre.c nombre.h
 $(EXE_DIR):
 	mkdir -p $(EXE_DIR)
 
-
+testsuite: testsuite.c
+	$(COMPILER) $(OBJS) testsuite.c -lcunit -o $@
+	./$@
