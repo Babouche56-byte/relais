@@ -11,10 +11,6 @@ int init_suite(void) { return 0; }
 /* Démontage de la fixation - appelé après chaque cas de test. */
 int clean_suite(void) { return 0; }
 
-/* Déclarations des fonctions */
-int is_valid_ip(const char *ip);
-int is_valid_port(int port);
-
 /****** Cas de test - validation de l'adresse IP *****/
 void test_validation_ip(void) {
     CU_ASSERT_TRUE(is_valid_ip("192.168.1.1"));
