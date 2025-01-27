@@ -5,10 +5,6 @@
 #include "nombre.h"
 #include <stdio.h>
 
-/* Déclaration des fonctions utilisées dans les tests */
-int is_valid_ip(const char *ip);
-int is_valid_port(int port);
-
 /** Montage de la fixation - appelé avant chaque cas de test. **/
 int init_suite(void) { return 0; }
 
