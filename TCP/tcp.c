@@ -1,3 +1,4 @@
+// tcp.c
 #include "erreur.h"
 #include "tcp.h"
 
@@ -46,8 +47,8 @@ void attacher_socket(int sock, int port) {
 }
 
 /* Dimensionner la file d'attente d'une socket */
-void dimensionner_file_attente_socket(int sock, int taille) {
-    if (listen(sock, taille) < 0) {
+void dimensionner_file_attente_socket(int sock) {
+    if (listen(sock, 5) < 0) {  // Utilisation d'une taille par défaut de 5
         traiter_erreur("Erreur lors du dimensionnement de la file d'attente");
     }
 }
