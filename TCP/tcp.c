@@ -56,7 +56,7 @@ void dimensionner_file_attente_socket(int sock) {
 /* Initialiser la structure adresse client */
 void init_addr_client(struct sockaddr_in* client_addr) {
     memset(client_addr, 0, sizeof(struct sockaddr_in));
-    client_addr->sin_family = AF_INET;
+    client_addr->sin_family = AF_INET; 
 }
 
 /* Attendre une connexion */
