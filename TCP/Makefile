@@ -1,19 +1,23 @@
 COMPILER=gcc
 EXE_DIR=/tmp/
-FICHIERS=erreur tcp nombre
+FICHIERS=erreur udp nombre
 OBJS:=$(FICHIERS:%=%.o)
+CUNIT_FLAGS=-lcunit -I/usr/include/CUnit
 
-all: relais
+all: relais testsuite
 	-rm $(OBJS)
 
-relais: client_tcp_relais.c serveur_tcp_relais.c $(EXE_DIR) $(OBJS)
-	mkdir -p $(EXE_DIR)/$@/TCP
-	$(COMPILER) erreur.o tcp.o nombre.o client_tcp_$@.c -o $(EXE_DIR)/$@/TCP/client_tcp_$@
-	$(COMPILER) erreur.o tcp.o nombre.o serveur_tcp_$@.c -o $(EXE_DIR)/$@/TCP/serveur_tcp_$@
-	chmod -R u+x $(EXE_DIR)/$@/TCP
+relais: client_udp_relais.c serveur_udp_relais.c $(EXE_DIR) $(OBJS)
+	mkdir -p $(EXE_DIR)/$@/UDP
+	$(COMPILER) erreur.o udp.o nombre.o client_udp_$@.c -o $(EXE_DIR)/$@/UDP/client_udp_$@
+	$(COMPILER) erreur.o udp.o nombre.o serveur_udp_$@.c -o $(EXE_DIR)/$@/UDP/serveur_udp_$@
+	chmod -R u+x $(EXE_DIR)/$@/UDP
 
-tcp.o: tcp.c tcp.h
-	$(COMPILER) -c tcp.c -o tcp.o
+testsuite: testsuite.c $(OBJS)
+	$(COMPILER) $(OBJS) testsuite.c -o testsuite $(CUNIT_FLAGS)
+
+udp.o: udp.c udp.h
+	$(COMPILER) -c udp.c -o udp.o
 
 erreur.o: erreur.c erreur.h
 	$(COMPILER) -c erreur.c -o erreur.o
@@ -24,6 +28,5 @@ nombre.o: nombre.c nombre.h
 $(EXE_DIR):
 	mkdir -p $(EXE_DIR)
 
-testsuite: testsuite.c
-	$(COMPILER) $(OBJS) testsuite.c -lcunit -o $@
-	./$@
+clean:
+	rm -f $(OBJS) testsuite
