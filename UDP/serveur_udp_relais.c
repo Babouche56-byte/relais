@@ -5,45 +5,43 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+
+#define MAX_CLIENTS 2
 
 int main(int argc, char** argv) {
-    // Vérifier le nombre d'arguments
     traiter_commande(argc != 2, argv[0], "<port>\nmauvais nombre d'arguments");
     
-    // Convertir le port en nombre et vérifier s'il est valide (non réservé)
     int port = atoi(argv[1]);
     traiter_commande(port < 1024 || port > 65535, argv[0], "<port>\n<port> est un port non réservé");
     
-    // Créer la socket serveur
     SOCK socket_serveur;
     creer_socket(NULL, port, &socket_serveur);
-    
-    // Attacher la socket
     attacher_socket(&socket_serveur);
     
     printf("Serveur démarré sur le port %d\n", port);
     
-    // Buffer pour recevoir les messages
-    char buffer[TAILLE_BUFFER];
+    struct sockaddr_in clients[MAX_CLIENTS];
+    char messages[MAX_CLIENTS][TAILLE_BUFFER];
+    int client_count = 0;
     
-    // Boucle principale du serveur
-    while(1) {
-        // Initialiser l'adresse client pour chaque nouvelle connexion
-        init_addr(&socket_serveur);
+    while (client_count < MAX_CLIENTS) {
+        struct sockaddr_in client_addr;
+        socklen_t addr_len = sizeof(client_addr);
+        int recv_len = recvfrom(socket_serveur.sockfd, messages[client_count], TAILLE_BUFFER, 0, (struct sockaddr*)&client_addr, &addr_len);
+        messages[client_count][recv_len] = '\0';
         
-        // Recevoir le message
-        recevoir_message(&socket_serveur, buffer);
+        printf("Message reçu de %s:%d : %s\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port), messages[client_count]);
         
-        // Afficher le message reçu
-        printf("Message reçu : %s\n", buffer);
-        
-        // Préparer et envoyer la réponse
-        char reponse[TAILLE_BUFFER];
-        snprintf(reponse, TAILLE_BUFFER, "Message reçu: %s", buffer);
-        envoyer_message(&socket_serveur, reponse);
+        clients[client_count++] = client_addr;
     }
     
-    // Fermer la socket (ce code ne sera jamais atteint dans cette version)
+    // Envoyer les messages reçus à l'autre client
+    sendto(socket_serveur.sockfd, messages[1], strlen(messages[1]), 0, (struct sockaddr*)&clients[0], sizeof(clients[0]));
+    sendto(socket_serveur.sockfd, messages[0], strlen(messages[0]), 0, (struct sockaddr*)&clients[1], sizeof(clients[1]));
+    
+    printf("Messages relayés entre les clients.\n");
+    
     fermer_connexion(&socket_serveur);
-    exit(0);
+    return 0;
 }

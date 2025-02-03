@@ -1,4 +1,5 @@
 #include "udp.h"
+#include "udp.h"
 #include "erreur.h"
 #include "nombre.h"
 #include <stdio.h>
@@ -29,29 +30,22 @@ void traiter_commande_wrapper(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-    // Vérifier les arguments
     traiter_commande_wrapper(argc, argv);
     
-    // Récupérer les arguments
     char* adresseIP = argv[1];
     int port = atoi(argv[2]);
     char* message = argv[3];
     
-    // Créer la socket client
     SOCK socket_client;
     creer_socket(adresseIP, port, &socket_client);
     
-    // Envoyer le message
     envoyer_message(&socket_client, message);
     printf("Message envoyé : %s\n", message);
     
-    // Attendre la réponse
     char buffer[TAILLE_BUFFER];
     recevoir_message(&socket_client, buffer);
     printf("Réponse reçue : %s\n", buffer);
     
-    // Fermer la connexion
     fermer_connexion(&socket_client);
-    
     return 0;
 }
