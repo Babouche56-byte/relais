@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define TAILLE_BUFFER 1024
+
 /* Créer une socket */
 int creer_socket(char* adresseIP, int port) {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -28,12 +30,6 @@ int creer_socket(char* adresseIP, int port) {
     }
 
     return sock;
-}
-
-/* Connecter une socket */
-void connecter_socket(int sock) {
-    // Cette fonction est déjà implémentée dans creer_socket
-    // Vous pouvez l'appeler directement si nécessaire
 }
 
 /* Attacher une socket */
