@@ -4,6 +4,7 @@
 #include "erreur.h"
 #include "nombre.h"
 #include <stdio.h>
+#include "test.c"
 
 /** Montage de la fixation - appelé avant chaque cas de test. **/
 int init_suite(void) { return 0; }
