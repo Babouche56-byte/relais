@@ -25,6 +25,9 @@ erreur.o: erreur.c erreur.h
 nombre.o: nombre.c nombre.h
 	$(COMPILER) -c nombre.c -o nombre.o
 
+analyse: $(SRCS)
+	cppcheck --error-exitcode=1 .
+
 $(EXE_DIR):
 	mkdir -p $(EXE_DIR)
 
